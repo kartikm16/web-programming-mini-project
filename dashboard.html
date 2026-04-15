@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Dashboard — FarmConnect</title>
+    <meta name="description" content="Manage your produce, track orders, and grow your business on FarmConnect.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="dashboard.css">
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <a href="index.html" class="sidebar-logo">
+                <i class="ri-leaf-fill"></i> Farm<span>Connect</span>
+            </a>
+            <button class="sidebar-close" id="sidebar-close" aria-label="Close sidebar">
+                <i class="ri-close-line"></i>
+            </button>
+        </div>
+
+        <div class="sidebar-farmer">
+            <div class="sf-avatar" id="sb-avatar">R</div>
+            <div>
+                <div class="sf-name" id="sb-name">Loading...</div>
+                <div class="sf-role"><i class="ri-verified-badge-fill"></i> Verified Farmer</div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="snav-item active" data-section="overview" id="nav-overview">
+                <i class="ri-dashboard-3-line"></i> <span>Dashboard</span>
+            </a>
+            <a href="#" class="snav-item" data-section="products" id="nav-products">
+                <i class="ri-store-2-line"></i> <span>My Products</span>
+                <span class="snav-badge" id="products-badge">0</span>
+            </a>
+            <a href="#" class="snav-item" data-section="orders" id="nav-orders">
+                <i class="ri-shopping-bag-3-line"></i> <span>Incoming Orders</span>
+                <span class="snav-badge snav-badge--alert" id="orders-badge">0</span>
+            </a>
+            <a href="#" class="snav-item" data-section="profile" id="nav-profile">
+                <i class="ri-user-settings-line"></i> <span>My Profile</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="dark-toggle-wrap">
+                <i class="ri-moon-line"></i>
+                <span>Dark Mode</span>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="dark-mode-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            <button class="logout-btn" id="logout-btn">
+                <i class="ri-logout-box-r-line"></i> Logout
+            </button>
+        </div>
+    </aside>
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="dashboard-main">
+
+        <!-- Top Bar -->
+        <header class="topbar">
+            <button class="topbar-menu-btn" id="topbar-menu-btn" aria-label="Open sidebar">
+                <i class="ri-menu-2-line"></i>
+            </button>
+            <div class="topbar-center">
+                <div class="topbar-search">
+                    <i class="ri-search-line"></i>
+                    <input type="text" placeholder="Search orders, products..." id="dash-search">
+                </div>
+            </div>
+            <div class="topbar-right">
+                <button class="topbar-icon-btn" id="notif-btn" aria-label="Notifications">
+                    <i class="ri-notification-3-line"></i>
+                    <span class="topbar-dot" id="notif-dot"></span>
+                </button>
+                <div class="topbar-farmer">
+                    <div class="tf-avatar" id="tb-avatar">R</div>
+                    <span id="tb-name">Farmer</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== OVERVIEW SECTION ===== -->
+        <section class="dash-section active" id="section-overview">
+            <div class="section-header">
+                <div>
+                    <h1 class="section-title" id="welcome-msg">Welcome back! 👋</h1>
+                    <p class="section-sub">Here's what's happening on your farm today.</p>
+                </div>
+                <div class="section-date" id="today-date"></div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card stat-card--green">
+                    <div class="stat-icon"><i class="ri-store-2-line"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Total Products</span>
+                        <span class="stat-num" id="stat-products">0</span>
+                        <span class="stat-change">Listed in marketplace</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-card--yellow">
+                    <div class="stat-icon"><i class="ri-time-line"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Pending Orders</span>
+                        <span class="stat-num" id="stat-pending">0</span>
+                        <span class="stat-change">Awaiting your response</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-card--blue">
+                    <div class="stat-icon"><i class="ri-checkbox-circle-line"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Accepted Orders</span>
+                        <span class="stat-num" id="stat-accepted">0</span>
+                        <span class="stat-change">Orders confirmed</span>
+                    </div>
+                </div>
+                <div class="stat-card stat-card--orange">
+                    <div class="stat-icon"><i class="ri-money-rupee-circle-line"></i></div>
+                    <div class="stat-info">
+                        <span class="stat-label">Est. Earnings</span>
+                        <span class="stat-num" id="stat-earnings">₹0</span>
+                        <span class="stat-change">From accepted orders</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Orders Preview -->
+            <div class="overview-panels">
+                <div class="ov-panel">
+                    <div class="ov-panel-header">
+                        <h3><i class="ri-history-line"></i> Recent Orders</h3>
+                        <button class="ov-see-all" data-section="orders">See All <i class="ri-arrow-right-s-line"></i></button>
+                    </div>
+                    <div class="ov-order-list" id="ov-recent-orders">
+                        <div class="empty-state-sm"><i class="ri-inbox-2-line"></i><span>No orders yet</span></div>
+                    </div>
+                </div>
+
+                <div class="ov-panel">
+                    <div class="ov-panel-header">
+                        <h3><i class="ri-star-line"></i> Quick Actions</h3>
+                    </div>
+                    <div class="quick-actions">
+                        <button class="qa-btn" data-section="products">
+                            <i class="ri-add-circle-line"></i>
+                            <span>Add Product</span>
+                        </button>
+                        <button class="qa-btn" data-section="orders">
+                            <i class="ri-shopping-bag-3-line"></i>
+                            <span>View Orders</span>
+                        </button>
+                        <button class="qa-btn" data-section="profile">
+                            <i class="ri-user-settings-line"></i>
+                            <span>Edit Profile</span>
+                        </button>
+                        <a href="farmers.html" class="qa-btn">
+                            <i class="ri-global-line"></i>
+                            <span>Your Page</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PRODUCTS SECTION ===== -->
+        <section class="dash-section" id="section-products">
+            <div class="section-header">
+                <div>
+                    <h1 class="section-title">My Products</h1>
+                    <p class="section-sub">Add and manage produce that appears in the FarmConnect Marketplace.</p>
+                </div>
+                <button class="btn-primary" id="open-add-product-btn">
+                    <i class="ri-add-line"></i> Add Product
+                </button>
+            </div>
+
+            <!-- Add Product Form -->
+            <div class="add-product-form-wrap" id="add-product-form-wrap" style="display:none;">
+                <div class="apf-header">
+                    <h3><i class="ri-seedling-line"></i> <span id="apf-title">Add New Product</span></h3>
+                    <button class="apf-close" id="apf-close"><i class="ri-close-line"></i></button>
+                </div>
+                <form id="add-product-form" novalidate>
+                    <input type="hidden" id="edit-product-id">
+                    <div class="apf-grid">
+                        <div class="form-group" id="fg-pname">
+                            <label for="productName">Product Name *</label>
+                            <div class="input-wrap"><i class="ri-leaf-line"></i><input type="text" id="productName" placeholder="e.g. Organic Tomatoes"></div>
+                            <span class="error-msg">Product name is required.</span>
+                        </div>
+                        <div class="form-group" id="fg-pcat">
+                            <label for="productCategory">Category *</label>
+                            <div class="input-wrap has-right">
+                                <i class="ri-price-tag-3-line"></i>
+                                <select id="productCategory">
+                                    <option value="">Select category...</option>
+                                    <option value="vegetables">Vegetables</option>
+                                    <option value="fruits">Fruits</option>
+                                    <option value="grains">Grains & Cereals</option>
+                                    <option value="dairy">Dairy</option>
+                                    <option value="spices">Spices & Herbs</option>
+                                    <option value="organic">Organic</option>
+                                </select>
+                                <i class="ri-arrow-down-s-line select-arrow"></i>
+                            </div>
+                            <span class="error-msg">Please select a category.</span>
+                        </div>
+                        <div class="form-group" id="fg-pprice">
+                            <label for="productPrice">Price (₹ per kg) *</label>
+                            <div class="input-wrap"><i class="ri-money-rupee-circle-line"></i><input type="number" id="productPrice" placeholder="e.g. 45" min="0"></div>
+                            <span class="error-msg">Enter a valid price.</span>
+                        </div>
+                        <div class="form-group" id="fg-pqty">
+                            <label for="productQty">Available Quantity (kg) *</label>
+                            <div class="input-wrap"><i class="ri-scales-line"></i><input type="number" id="productQty" placeholder="e.g. 100" min="0"></div>
+                            <span class="error-msg">Enter a valid quantity.</span>
+                        </div>
+                        <div class="form-group apf-full" id="fg-pimg">
+                            <label for="productImageFile">Product Image</label>
+                            <div class="image-upload-wrapper">
+                                <div class="file-input-container">
+                                    <input type="file" id="productImageFile" accept="image/*" class="file-input">
+                                    <label for="productImageFile" class="file-label">
+                                        <i class="ri-upload-2-line"></i>
+                                        <span>Click to upload or drag & drop</span>
+                                    </label>
+                                </div>
+                                <div class="or-divider"><span>OR</span></div>
+                                <div class="input-wrap">
+                                    <i class="ri-link"></i>
+                                    <input type="url" id="productImage" placeholder="Paste image URL instead...">
+                                </div>
+                            </div>
+                            <div id="image-preview-container" class="image-preview-container" style="display: none;">
+                                <img id="image-preview" src="" alt="Preview">
+                                <button type="button" id="remove-image-btn" class="remove-image-btn"><i class="ri-close-line"></i></button>
+                            </div>
+                        </div>
+                        <div class="form-group apf-full">
+                            <label>
+                                <input type="checkbox" id="productOrganic" style="margin-right:0.4rem; accent-color: var(--primary);">
+                                <span>Mark as Organic</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="apf-actions">
+                        <button type="button" class="btn-outline" id="apf-cancel">Cancel</button>
+                        <button type="submit" class="btn-primary" id="apf-submit"><i class="ri-check-line"></i> <span id="apf-btn-label">Save Product</span></button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Products Grid -->
+            <div class="products-grid-dash" id="farmer-products-grid">
+                <div class="empty-state">
+                    <i class="ri-store-2-line"></i>
+                    <h3>No products yet</h3>
+                    <p>Add your first product to start selling in the marketplace.</p>
+                    <button class="btn-primary" id="empty-add-btn"><i class="ri-add-line"></i> Add First Product</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== ORDERS SECTION ===== -->
+        <section class="dash-section" id="section-orders">
+            <div class="section-header">
+                <div>
+                    <h1 class="section-title">Incoming Orders</h1>
+                    <p class="section-sub">Customer requests sent to you. Review and respond.</p>
+                </div>
+                <div class="order-filters">
+                    <button class="of-pill active" data-filter="all">All</button>
+                    <button class="of-pill" data-filter="Pending">Pending</button>
+                    <button class="of-pill" data-filter="Accepted">Accepted</button>
+                    <button class="of-pill" data-filter="Rejected">Rejected</button>
+                </div>
+            </div>
+
+            <div class="orders-list" id="orders-list">
+                <div class="empty-state">
+                    <i class="ri-inbox-2-line"></i>
+                    <h3>No orders received</h3>
+                    <p>When customers send custom orders from the Farmers page, they'll appear here.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PROFILE SECTION ===== -->
+        <section class="dash-section" id="section-profile">
+            <div class="section-header">
+                <div>
+                    <h1 class="section-title">My Profile</h1>
+                    <p class="section-sub">View and update your farmer profile information.</p>
+                </div>
+                <button class="btn-primary" id="save-profile-btn"><i class="ri-save-line"></i> Save Changes</button>
+            </div>
+
+            <div class="profile-layout">
+                <div class="profile-card-left">
+                    <div class="profile-avatar-big" id="profile-avatar-big">R</div>
+                    <h3 id="profile-display-name">Farmer</h3>
+                    <p id="profile-display-loc"><i class="ri-map-pin-line"></i> Loading...</p>
+                    <div class="profile-badges" id="profile-badges"></div>
+                    <div class="profile-joined" id="profile-joined"></div>
+                </div>
+
+                <div class="profile-form-right">
+                    <form id="profile-form">
+                        <div class="apf-grid">
+                            <div class="form-group">
+                                <label for="prof-name">Full Name</label>
+                                <div class="input-wrap"><i class="ri-user-3-line"></i><input type="text" id="prof-name"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-farm">Farm Name</label>
+                                <div class="input-wrap"><i class="ri-store-2-line"></i><input type="text" id="prof-farm"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-phone">Phone Number</label>
+                                <div class="input-wrap"><i class="ri-phone-line"></i><input type="tel" id="prof-phone"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-email">Email</label>
+                                <div class="input-wrap"><i class="ri-mail-line"></i><input type="email" id="prof-email" readonly style="opacity:0.6;cursor:not-allowed;"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-location">Farm Location</label>
+                                <div class="input-wrap"><i class="ri-map-pin-line"></i><input type="text" id="prof-location"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-experience">Experience (Years)</label>
+                                <div class="input-wrap"><i class="ri-time-line"></i><input type="number" id="prof-experience" min="0"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="prof-produce">Type of Produce</label>
+                                <div class="input-wrap has-right">
+                                    <i class="ri-plant-line"></i>
+                                    <select id="prof-produce">
+                                        <option value="Vegetables">Vegetables</option>
+                                        <option value="Fruits">Fruits</option>
+                                        <option value="Dairy">Dairy</option>
+                                        <option value="Grains">Grains & Cereals</option>
+                                        <option value="Organic">Organic</option>
+                                        <option value="Spices">Spices & Herbs</option>
+                                        <option value="Mixed">Mixed Produce</option>
+                                    </select>
+                                    <i class="ri-arrow-down-s-line select-arrow"></i>
+                                </div>
+                            </div>
+                            <div class="form-group apf-full">
+                                <label for="prof-method">Farming Method</label>
+                                <div class="input-wrap has-right">
+                                    <i class="ri-recycle-line"></i>
+                                    <select id="prof-method">
+                                        <option value="Organic">Organic</option>
+                                        <option value="Traditional">Traditional</option>
+                                        <option value="Hybrid">Hybrid</option>
+                                        <option value="Natural">Natural / Chemical-Free</option>
+                                    </select>
+                                    <i class="ri-arrow-down-s-line select-arrow"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- ===== TOAST ===== -->
+    <div class="dash-toast" id="dash-toast">
+        <i class="ri-checkbox-circle-fill"></i>
+        <span id="dash-toast-msg">Action successful!</span>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div class="confirm-overlay" id="confirm-overlay">
+        <div class="confirm-box">
+            <div class="confirm-icon"><i class="ri-delete-bin-2-line"></i></div>
+            <h3>Delete Product?</h3>
+            <p>This will permanently remove this product from the marketplace.</p>
+            <div class="confirm-actions">
+                <button class="btn-outline" id="confirm-cancel">Cancel</button>
+                <button class="btn-danger" id="confirm-delete">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
