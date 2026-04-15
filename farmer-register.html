@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Join as Farmer — FarmConnect</title>
+    <meta name="description" content="Register as a farmer on FarmConnect and start selling your produce directly to customers.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --primary-dark: #1b5e20;
+            --accent: #f57f17;
+            --bg-main: #f0fdf4;
+            --bg-card: #ffffff;
+            --text-main: #1f2937;
+            --text-muted: #4b5563;
+            --text-light: #9ca3af;
+            --border: #e5e7eb;
+            --font-body: 'Outfit', sans-serif;
+            --font-heading: 'Playfair Display', serif;
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.08);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: var(--font-body);
+            background: var(--bg-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Navbar consistency */
+        .auth-header {
+            padding: 1.5rem 3rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border);
+            box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+        }
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            text-decoration: none;
+        }
+        .logo i { color: var(--primary); font-size: 1.6rem; }
+        .logo span { color: var(--primary); }
+        .header-link {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+        .header-link:hover { color: var(--primary); }
+        /* Main Layout */
+        .auth-layout {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            min-height: calc(100vh - 65px);
+        }
+        /* Left Panel */
+        .auth-panel {
+            background: linear-gradient(145deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
+            padding: 4rem 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .auth-panel::before {
+            content: '';
+            position: absolute;
+            width: 400px; height: 400px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            top: -100px; left: -100px;
+        }
+        .auth-panel::after {
+            content: '';
+            position: absolute;
+            width: 300px; height: 300px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 50%;
+            bottom: -50px; right: -50px;
+        }
+        .panel-content { position: relative; z-index: 1; }
+        .panel-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            background: rgba(255,255,255,0.15);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.4rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-bottom: 2rem;
+        }
+        .panel-title {
+            font-family: var(--font-heading);
+            font-size: 2.8rem;
+            color: white;
+            line-height: 1.2;
+            margin-bottom: 1rem;
+        }
+        .panel-desc {
+            color: rgba(255,255,255,0.8);
+            font-size: 1rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+        }
+        .panel-benefits { list-style: none; }
+        .panel-benefits li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: rgba(255,255,255,0.9);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        .panel-benefits li i {
+            width: 32px; height: 32px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+        /* Right Form Panel */
+        .auth-form-wrap {
+            padding: 3rem 4rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: white;
+        }
+        .form-header { margin-bottom: 2rem; }
+        .form-header h2 {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--text-main);
+            margin-bottom: 0.4rem;
+        }
+        .form-header p { color: var(--text-muted); font-size: 0.95rem; }
+        /* Form */
+        .register-form { width: 100%; }
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .input-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-wrap i {
+            position: absolute;
+            left: 0.9rem;
+            color: var(--text-light);
+            font-size: 1rem;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+        .input-wrap input,
+        .input-wrap select,
+        .input-wrap textarea {
+            width: 100%;
+            padding: 0.75rem 0.85rem 0.75rem 2.5rem;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 0.95rem;
+            color: var(--text-main);
+            background: #fafafa;
+            transition: var(--transition);
+            outline: none;
+        }
+        .input-wrap select { cursor: pointer; appearance: none; padding-right: 2.5rem; }
+        .input-wrap textarea { resize: vertical; min-height: 80px; }
+        .input-wrap input:focus,
+        .input-wrap select:focus,
+        .input-wrap textarea:focus {
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.08);
+        }
+        .input-wrap input:focus ~ i,
+        .form-group:focus-within .input-wrap i { color: var(--primary); }
+        .input-wrap.has-right-icon select { padding-right: 2.5rem; }
+        .select-arrow {
+            position: absolute;
+            right: 0.9rem;
+            color: var(--text-light);
+            pointer-events: none;
+        }
+        .form-group.error .input-wrap input,
+        .form-group.error .input-wrap select {
+            border-color: #ef4444;
+            background: #fff5f5;
+        }
+        .error-msg {
+            font-size: 0.78rem;
+            color: #ef4444;
+            margin-top: 0.3rem;
+            display: none;
+        }
+        .form-group.error .error-msg { display: block; }
+        /* Section Divider */
+        .form-section-label {
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--primary);
+            margin: 1.5rem 0 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .form-section-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+        /* Submit Button */
+        .btn-submit {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-family: var(--font-body);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.25);
+        }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(46, 125, 50, 0.35);
+        }
+        .btn-submit:active { transform: translateY(0); }
+        .login-cta {
+            text-align: center;
+            margin-top: 1.25rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+        .login-cta a { color: var(--primary); font-weight: 600; text-decoration: none; }
+        .login-cta a:hover { text-decoration: underline; }
+        /* Success Toast */
+        .toast {
+            position: fixed;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: white;
+            border-left: 4px solid var(--primary);
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: var(--shadow-lg);
+            z-index: 9999;
+            transform: translateX(120%);
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        .toast.show { transform: translateX(0); }
+        .toast i { color: var(--primary); font-size: 1.4rem; }
+        .toast-text {
+            display: flex;
+            flex-direction: column;
+        }
+        .toast-text strong { display: block; font-weight: 600; color: var(--text-main); }
+        .toast-text span { font-size: 0.85rem; color: var(--text-muted); }
+        /* Responsive */
+        @media (max-width: 900px) {
+            .auth-layout { grid-template-columns: 1fr; }
+            .auth-panel { display: none; }
+            .auth-form-wrap { padding: 2rem 1.5rem; }
+            .form-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="auth-header">
+        <a href="index.html" class="logo">
+            <i class="ri-leaf-fill"></i> Farm<span>Connect</span>
+        </a>
+        <a href="farmer-login.html" class="header-link">Already a farmer? <strong>Login →</strong></a>
+    </header>
+
+    <div class="auth-layout">
+        <!-- Left Panel -->
+        <div class="auth-panel">
+            <div class="panel-content">
+                <div class="panel-badge"><i class="ri-verified-badge-fill"></i> Trusted Farmer Network</div>
+                <h1 class="panel-title">Grow your business with FarmConnect</h1>
+                <p class="panel-desc">Join 500+ farmers selling directly to customers. No middlemen, better prices, and a dedicated dashboard to manage everything.</p>
+                <ul class="panel-benefits">
+                    <li><i class="ri-store-2-line"></i> Your own digital storefront</li>
+                    <li><i class="ri-secure-payment-line"></i> Secure & direct payments</li>
+                    <li><i class="ri-line-chart-line"></i> Track orders & earnings</li>
+                    <li><i class="ri-customer-service-2-line"></i> 24/7 platform support</li>
+                    <li><i class="ri-global-line"></i> Reach urban customers city-wide</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Form Panel -->
+        <div class="auth-form-wrap">
+            <div class="form-header">
+                <div id="notice-nonfarmer" style="display: none; background: #fffbeb; border: 1px solid #fef3c7; color: #92400e; padding: 1rem; border-radius: 8px; margin-bottom: 1.5rem; font-size: 0.9rem;">
+                    <i class="ri-information-line"></i> <strong>Registration Required:</strong> You are currently logged in as a customer. Please fill out the form below to become a registered farmer and access the dashboard.
+                </div>
+                <h2>Create Your Account</h2>
+                <p>Fill in the details below to get started as a FarmConnect seller.</p>
+            </div>
+
+            <form class="register-form" id="register-form" novalidate>
+                <div class="form-section-label"><i class="ri-user-line"></i> Personal & Farm Info</div>
+                <div class="form-row">
+                    <div class="form-group" id="fg-name">
+                        <label for="fullName">Full Name</label>
+                        <div class="input-wrap">
+                            <i class="ri-user-3-line"></i>
+                            <input type="text" id="fullName" placeholder="e.g. Ramesh Patil" autocomplete="name">
+                        </div>
+                        <span class="error-msg">Please enter your full name.</span>
+                    </div>
+                    <div class="form-group" id="fg-farm">
+                        <label for="farmName">Farm Name</label>
+                        <div class="input-wrap">
+                            <i class="ri-store-2-line"></i>
+                            <input type="text" id="farmName" placeholder="e.g. Patil Organic Farms">
+                        </div>
+                        <span class="error-msg">Please enter your farm name.</span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" id="fg-phone">
+                        <label for="phone">Phone Number</label>
+                        <div class="input-wrap">
+                            <i class="ri-phone-line"></i>
+                            <input type="tel" id="phone" placeholder="e.g. 9876543210" maxlength="10">
+                        </div>
+                        <span class="error-msg">Enter a valid 10-digit number.</span>
+                    </div>
+                    <div class="form-group" id="fg-email">
+                        <label for="email">Email Address</label>
+                        <div class="input-wrap">
+                            <i class="ri-mail-line"></i>
+                            <input type="email" id="email" placeholder="you@email.com" autocomplete="email">
+                        </div>
+                        <span class="error-msg">Enter a valid email address.</span>
+                    </div>
+                </div>
+                <div class="form-row">
+                   <div class="form-group" id="fg-password" style="width: 100%; grid-column: span 2;">
+                        <label for="password">Password</label>
+                        <div class="input-wrap">
+                            <i class="ri-lock-2-line"></i>
+                            <input type="password" id="password" placeholder="Min. 6 characters" autocomplete="new-password">
+                        </div>
+                        <span class="error-msg">Password must be at least 6 characters.</span>
+                    </div>
+                </div>
+
+                <div class="form-section-label"><i class="ri-seedling-line"></i> Farm Details</div>
+                <div class="form-row">
+                    <div class="form-group" id="fg-location">
+                        <label for="location">Farm Location</label>
+                        <div class="input-wrap">
+                            <i class="ri-map-pin-line"></i>
+                            <input type="text" id="location" placeholder="Village / City, District">
+                        </div>
+                        <span class="error-msg">Please enter your farm location.</span>
+                    </div>
+                    <div class="form-group" id="fg-experience">
+                        <label for="experience">Experience (Years)</label>
+                        <div class="input-wrap">
+                            <i class="ri-time-line"></i>
+                            <input type="number" id="experience" placeholder="e.g. 5" min=0 max=80>
+                        </div>
+                        <span class="error-msg">Enter valid years of experience.</span>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group" id="fg-produce">
+                        <label for="produceType">Type of Produce</label>
+                        <div class="input-wrap has-right-icon">
+                            <i class="ri-plant-line"></i>
+                            <select id="produceType">
+                                <option value="">Select type...</option>
+                                <option value="Vegetables">Vegetables</option>
+                                <option value="Fruits">Fruits</option>
+                                <option value="Dairy">Dairy</option>
+                                <option value="Grains">Grains & Cereals</option>
+                                <option value="Organic">Organic</option>
+                                <option value="Spices">Spices & Herbs</option>
+                                <option value="Mixed">Mixed Produce</option>
+                            </select>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
+                        <span class="error-msg">Please select your produce type.</span>
+                    </div>
+                    <div class="form-group" id="fg-method">
+                        <label for="farmingMethod">Farming Method</label>
+                        <div class="input-wrap has-right-icon">
+                            <i class="ri-recycle-line"></i>
+                            <select id="farmingMethod">
+                                <option value="">Select method...</option>
+                                <option value="Organic">Organic</option>
+                                <option value="Traditional">Traditional</option>
+                                <option value="Hybrid">Hybrid</option>
+                                <option value="Natural">Natural / Chemical-Free</option>
+                            </select>
+                            <i class="ri-arrow-down-s-line select-arrow"></i>
+                        </div>
+                        <span class="error-msg">Please select your farming method.</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-submit" id="register-btn">
+                    <i class="ri-user-add-line"></i> Create Farmer Account
+                </button>
+                <p class="login-cta">Already registered? <a href="farmer-login.html">Login here</a></p>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <i class="ri-checkbox-circle-fill"></i>
+        <div class="toast-text">
+            <strong>Registration Successful!</strong>
+            <span>Redirecting to your dashboard...</span>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+    <script>
+        // Check for notices
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('msg') === 'nonfarmer') {
+                document.getElementById('notice-nonfarmer').style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>

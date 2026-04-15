@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Farmer Login — FarmConnect</title>
+    <meta name="description" content="Login to your FarmConnect farmer dashboard.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2e7d32; --primary-light: #4caf50; --primary-dark: #1b5e20;
+            --bg-main: #f0fdf4; --bg-card: #ffffff;
+            --text-main: #1f2937; --text-muted: #4b5563; --text-light: #9ca3af;
+            --border: #e5e7eb;
+            --font-body: 'Outfit', sans-serif; --font-heading: 'Playfair Display', serif;
+            --shadow-lg: 0 10px 40px rgba(0,0,0,0.08);
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-body); background: var(--bg-main); min-height: 100vh; display: flex; flex-direction: column; }
+
+        .auth-header {
+            background: white; padding: 1rem 2rem;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 1px solid var(--border); box-shadow: 0 1px 8px rgba(0,0,0,0.04);
+        }
+        .logo { display: flex; align-items: center; gap: 0.5rem; font-size: 1.4rem; font-weight: 700; color: var(--text-main); text-decoration: none; }
+        .logo i { color: var(--primary); font-size: 1.6rem; }
+        .logo span { color: var(--primary); }
+        .header-link { font-size: 0.9rem; color: var(--text-muted); text-decoration: none; transition: var(--transition); }
+        .header-link:hover { color: var(--primary); }
+
+
+        .auth-panel {
+            background: linear-gradient(145deg, var(--primary-dark) 0%, var(--primary) 60%, var(--primary-light) 100%);
+            padding: 4rem 3rem; display: flex; flex-direction: column; justify-content: center;
+            position: relative; overflow: hidden;
+        }
+        .auth-panel::before { content: ''; position: absolute; width: 400px; height: 400px; background: rgba(255,255,255,0.05); border-radius: 50%; top: -100px; left: -100px; }
+        .auth-panel::after { content: ''; position: absolute; width: 300px; height: 300px; background: rgba(255,255,255,0.05); border-radius: 50%; bottom: -50px; right: -50px; }
+        .panel-content { position: relative; z-index: 1; }
+        .panel-badge {
+            display: inline-flex; align-items: center; gap: 0.4rem;
+            background: rgba(255,255,255,0.15); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.2); color: white;
+            padding: 0.4rem 1rem; border-radius: 50px; font-size: 0.85rem; font-weight: 500; margin-bottom: 2rem;
+        }
+        .panel-title { font-family: var(--font-heading); font-size: 2.8rem; color: white; line-height: 1.2; margin-bottom: 1rem; }
+        .panel-desc { color: rgba(255,255,255,0.8); font-size: 1rem; line-height: 1.7; margin-bottom: 2.5rem; }
+
+        /* Stats */
+        .panel-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; }
+        .stat-box {
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15); border-radius: 12px;
+            padding: 1.25rem 1rem; text-align: center;
+        }
+        .stat-box .num { font-size: 1.8rem; font-weight: 700; color: white; line-height: 1; }
+        .stat-box .lbl { font-size: 0.75rem; color: rgba(255,255,255,0.7); margin-top: 0.3rem; }
+
+        /* Form wrap */
+        .auth-form-wrap {
+            padding: 0 4rem; display: flex; flex-direction: column; justify-content: center;
+            background: white;
+        }
+        .form-header { margin-bottom: 2.5rem; }
+        .form-header h2 { font-family: var(--font-heading); font-size: 2rem; color: var(--text-main); margin-bottom: 0.4rem; }
+        .form-header p { color: var(--text-muted); font-size: 0.95rem; }
+
+        .form-group { margin-bottom: 1.25rem; }
+        .form-group label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--text-main); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-wrap { position: relative; }
+        .input-wrap i.icon { position: absolute; left: 0.9rem; top: 50%; transform: translateY(-50%); color: var(--text-light); font-size: 1rem; pointer-events: none; transition: var(--transition); }
+        .input-wrap input {
+            width: 100%; padding: 0.8rem 0.85rem 0.8rem 2.5rem;
+            border: 1.5px solid var(--border); border-radius: 10px;
+            font-family: var(--font-body); font-size: 0.95rem; color: var(--text-main);
+            background: #fafafa; transition: var(--transition); outline: none;
+        }
+        .input-wrap input:focus { border-color: var(--primary); background: white; box-shadow: 0 0 0 3px rgba(46,125,50,0.08); }
+        .input-wrap input:focus ~ i.icon { color: var(--primary); }
+        .pw-toggle { position: absolute; right: 0.9rem; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: var(--text-light); font-size: 1rem; padding: 0; }
+        .pw-toggle:hover { color: var(--text-muted); }
+        .form-group.error input { border-color: #ef4444; background: #fff5f5; }
+        .error-msg { font-size: 0.78rem; color: #ef4444; margin-top: 0.3rem; display: none; }
+        .form-group.error .error-msg { display: block; }
+
+        .global-error {
+            background: #fef2f2; border: 1px solid #fecaca; border-radius: 10px;
+            padding: 0.8rem 1rem; font-size: 0.85rem; color: #dc2626;
+            display: flex; align-items: center; gap: 0.5rem;
+            margin-bottom: 1rem; display: none;
+        }
+        .global-error.show { display: flex; }
+
+        .forget-row { display: flex; justify-content: flex-end; margin-top: -0.5rem; margin-bottom: 1rem; }
+        .forget-row a { font-size: 0.85rem; color: var(--primary); text-decoration: none; }
+
+        .btn-submit {
+            width: 100%; padding: 0.9rem; background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+            color: white; border: none; border-radius: 10px; font-family: var(--font-body);
+            font-size: 1rem; font-weight: 600; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            transition: var(--transition); box-shadow: 0 4px 15px rgba(46,125,50,0.25);
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(46,125,50,0.35); }
+
+        .divider { display: flex; align-items: center; gap: 1rem; margin: 1.5rem 0; color: var(--text-light); font-size: 0.85rem; }
+        .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+        .register-cta { text-align: center; margin-top: 1rem; font-size: 0.9rem; color: var(--text-muted); }
+        .register-cta a { color: var(--primary); font-weight: 600; text-decoration: none; }
+        .register-cta a:hover { text-decoration: underline; }
+
+        .demo-box {
+            background: var(--bg-main); border: 1px solid rgba(46,125,50,0.15);
+            border-radius: 10px; padding: 0.9rem 1rem; margin-top: 1.5rem;
+            font-size: 0.82rem; color: var(--text-muted);
+        }
+        .demo-box strong { color: var(--primary); }
+
+        @media (max-width: 900px) {
+            .auth-layout { grid-template-columns: 1fr; }
+            .auth-panel { display: none; }
+            .auth-form-wrap { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <header class="auth-header">
+        <a href="index.html" class="logo"><i class="ri-leaf-fill"></i> Farm<span>Connect</span></a>
+        <a href="farmer-register.html" class="header-link">New here? <strong>Join as Farmer →</strong></a>
+    </header>
+
+    <div class="auth-layout">
+        <!-- Left Panel -->
+        <div class="auth-panel">
+            <div class="panel-content">
+                <div class="panel-badge"><i class="ri-dashboard-3-line"></i> Farmer Dashboard</div>
+                <h1 class="panel-title">Welcome back, Farmer</h1>
+                <p class="panel-desc">Log in to manage your products, track your earnings, and respond to customer orders — all from one place.</p>
+                <div class="panel-stats">
+                    <div class="stat-box"><div class="num">500+</div><div class="lbl">Active Farmers</div></div>
+                    <div class="stat-box"><div class="num">20+</div><div class="lbl">Districts</div></div>
+                    <div class="stat-box"><div class="num">98%</div><div class="lbl">Satisfaction</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Login Form -->
+        <div class="auth-form-wrap">
+            <div class="form-header">
+                <h2>Sign In</h2>
+                <p>Enter your credentials to access your farmer dashboard.</p>
+            </div>
+
+            <form id="login-form" novalidate>
+                <div class="global-error" id="global-error">
+                    <i class="ri-error-warning-line"></i>
+                    <span id="global-error-msg">Invalid email or password. Please try again.</span>
+                </div>
+
+                <div class="form-group" id="fg-email">
+                    <label for="email">Email Address</label>
+                    <div class="input-wrap">
+                        <i class="ri-mail-line icon"></i>
+                        <input type="email" id="email" placeholder="you@email.com" autocomplete="email">
+                    </div>
+                    <span class="error-msg">Please enter a valid email.</span>
+                </div>
+
+                <div class="form-group" id="fg-password">
+                    <label for="password">Password</label>
+                    <div class="input-wrap">
+                        <i class="ri-lock-2-line icon"></i>
+                        <input type="password" id="password" placeholder="Your password" autocomplete="current-password">
+                        <button type="button" class="pw-toggle" id="pw-toggle" aria-label="Toggle password">
+                            <i class="ri-eye-off-line"></i>
+                        </button>
+                    </div>
+                    <span class="error-msg">Please enter your password.</span>
+                </div>
+
+                <div class="forget-row"><a href="#">Forgot password?</a></div>
+
+                <button type="submit" class="btn-submit" id="login-btn">
+                    <i class="ri-login-box-line"></i> Login to Dashboard
+                </button>
+
+                <div class="divider">or</div>
+
+                <div class="demo-box">
+                    <strong>🧪 Demo Account:</strong> Use email <strong>demo@farmconnect.com</strong> and password <strong>demo123</strong> to explore the dashboard.
+                </div>
+
+                <p class="register-cta">Don't have an account? <a href="farmer-register.html">Register as Farmer</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="auth.js"></script>
+</body>
+</html>
